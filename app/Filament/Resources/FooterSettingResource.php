@@ -33,6 +33,10 @@ class FooterSettingResource extends Resource
         ->whereIn('id', [30, 31,51]); // Only show records with ID 1 or 2
     }
 
+    public static function shouldRegisterNavigation(): bool
+{
+    return false; // Hides it from the sidebar navigation
+}
 
     public static function form(Form $form): Form
     {

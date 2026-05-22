@@ -27,19 +27,41 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->plugin(
-            \TomatoPHP\FilamentCms\FilamentCMSPlugin::make()
-            ->useCategory()
-            ->usePost()
-            ->allowExport()
-            ->allowImport()
-            ->usePageBuilder()
-            )
-            ->plugin(
-            \TomatoPHP\FilamentSettingsHub\FilamentSettingsHubPlugin::make()
-            ->allowSiteSettings()
-            ->allowSocialMenuSettings()
-            )
+            // ->plugin(
+            // \TomatoPHP\FilamentCms\FilamentCMSPlugin::make()
+            // ->useCategory()
+            // ->usePost()
+            // ->allowExport()
+            // ->allowImport()
+            // ->usePageBuilder()
+            // )
+            // ->plugin(
+            // \TomatoPHP\FilamentBrowser\FilamentBrowserPlugin::make()
+            // ->hiddenFolders([
+            // base_path('app')
+            // ])
+            // ->hiddenFiles([
+            // base_path('.env')
+            // ])
+            // ->hiddenExtensions([
+            // "php"
+            // ])
+            // ->allowCreateFolder()
+            // ->allowEditFile()
+            // ->allowCreateNewFile()
+            // ->allowCreateFolder()
+            // ->allowRenameFile()
+            // ->allowDeleteFile()
+            // ->allowMarkdown()
+            // ->allowCode()
+            // ->allowPreview()
+            // ->basePath(base_path())
+            // )
+            // ->plugin(
+            // \TomatoPHP\FilamentSettingsHub\FilamentSettingsHubPlugin::make()
+            // ->allowSiteSettings()
+            // ->allowSocialMenuSettings()
+            // )
              ->plugins([
             \Biostate\FilamentMenuBuilder\FilamentMenuBuilderPlugin::make(), // Add this line
         ])
@@ -54,8 +76,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                //Widgets\AccountWidget::class,
+                //Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

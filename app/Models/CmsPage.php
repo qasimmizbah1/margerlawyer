@@ -18,7 +18,8 @@ class CmsPage extends Model
         'meta_title',
         'meta_description',
         'meta_keywords',
-        'is_active'
+        'is_active',
+        'is_home',
     ];
      protected $casts = [
         'content' => 'array',

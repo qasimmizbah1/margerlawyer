@@ -19,7 +19,7 @@ class TestimonialResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-bottom-center-text';
     protected static ?string $navigationGroup = 'Settings';
-
+    protected static ?int $navigationSort = 10;
     public static function form(Form $form): Form
     {
         return $form
@@ -52,9 +52,14 @@ class TestimonialResource extends Resource
                     ->required()
                     ->columnSpanFull(),
 
+                Forms\Components\TextInput::make('linkdin')
+                    ->maxLength(255),
+
                 Forms\Components\Toggle::make('is_active')
                     ->required()
                     ->default(true),
+
+
             ]);
     }
 

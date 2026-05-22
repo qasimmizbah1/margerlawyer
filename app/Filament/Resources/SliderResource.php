@@ -12,34 +12,80 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-
-
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Repeater;
 
 
 class SliderResource extends Resource
 {
     protected static ?string $model = Slider::class;
 
-      protected static ?string $navigationIcon = 'heroicon-o-photo';
+    protected static ?string $navigationIcon = 'heroicon-o-photo';
 
-      protected static ?string $navigationGroup = 'Pages';
+    protected static ?string $navigationGroup = 'Pages';
+      
 
     public static function form(Form $form): Form
     {
         return $form
+        
             ->schema([
+
+             Section::make('Slider Image Details')
+                ->columns(2)
+                ->schema([
+                Forms\Components\FileUpload::make('bgimage')
+                    ->image()
+                    ->required()
+                    ->disk('public')
+                    ->directory('sliders'),
+                   
+                
                 Forms\Components\FileUpload::make('image')
                     ->image()
                     ->required()
-                    ->directory('sliders')
-                    ->columnSpanFull(),
-                    
+                    ->disk('public')
+                    ->directory('sliders'),
+                
                 Forms\Components\TextInput::make('title')
                     ->maxLength(255),
-                    
+
                 Forms\Components\TextInput::make('subtitle')
                     ->maxLength(255),
                     
+                
+                ]),
+                Section::make('M&A Council')
+                ->schema([
+                    Forms\Components\TextInput::make('council_title')
+                    ->maxLength(255),
+
+                    Repeater::make('ma_council')
+                        ->schema([
+
+                            Forms\Components\TextInput::make('title')
+                                ->required()
+                                ->maxLength(255),
+
+                            Forms\Components\TextInput::make('subtitle')
+                                ->required()
+                                ->maxLength(255),
+
+                        ])
+                        ->defaultItems(3)
+                        ->minItems(3)
+                        ->maxItems(3)
+                        ->columns(2),
+
+                ]),
+                Section::make('Slider Details')
+                ->columns(2)
+                ->schema([
+                    
+                Forms\Components\TextInput::make('details-heading')
+                                ->required()
+                                ->maxLength(255),
+
                 Forms\Components\Textarea::make('content')
                     ->columnSpanFull(),
                     
@@ -58,6 +104,7 @@ class SliderResource extends Resource
                 Forms\Components\Toggle::make('is_active')
                     ->required()
                     ->default(true),
+                ]),
 
                 
             ]);

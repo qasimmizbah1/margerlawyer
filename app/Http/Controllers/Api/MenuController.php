@@ -16,6 +16,26 @@ class MenuController extends Controller
      * @param string $menuName
      * @return \Illuminate\Http\JsonResponse
      */
+    public function index()
+{
+    // Get all menus with their top-level items and children
+    $menus = Menu::with(['items' => function($query) {
+        $query->whereNull('parent_id')
+              ->with('children')
+              ->orderBy('_lft');
+    }])->get();
+    
+    if ($menus->isEmpty()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'No menus found'
+        ], 404);
+    }
+
+    return response()->json([
+        'data' => $menus
+    ]);
+}
     public function getMenuItems($menuName)
     {
         // Find the menu by name

@@ -22,6 +22,8 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\FileUpload;
 use FilamentTiptapEditor\TiptapEditor;
 use Filament\Forms\Get;
+use Filament\Forms\Set;
+use Illuminate\Database\Eloquent\Model;
 
 class CmsPageResource extends Resource
 {
@@ -37,58 +39,90 @@ class CmsPageResource extends Resource
         return static::getModel()::count();
     }
 
-
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 TextInput::make('title')
-                ->required()
-                ->live(debounce: 500)
-                ->afterStateUpdated(fn ($state, callable $set) => 
-                $set('slug', Str::slug($state))
-                ),
+                    ->required()
+                    ->live(onBlur: true) 
+                    ->afterStateUpdated(fn ($state, callable $set) => 
+                        $set('slug', Str::slug($state))
+                    ),
+                
                 TextInput::make('slug')
-                ->required()
-                ->unique(ignoreRecord: true),
+                    ->required()
+                    ->unique(ignoreRecord: true),
 
                 FileUpload::make('feature_image')
-                ->label('Feature Image')
-                ->image()
-                ->columnSpan(2)
-                ->directory('feature_image')
-                ->reorderable(),
-                // RichEditor::make('content')
-                // ->columnSpan(2),
+                    ->label('Feature Image')
+                    ->image()
+                    ->columnSpan(2)
+                    ->directory('feature_image')
+                    ->reorderable(),
+                
                 Repeater::make('content')
-                ->schema([
-                     Toggle::make('use_text_editor')
-            ->label('Use Text Area')
-            ->live()
-            ->default(false),
-             Textarea::make('page_content')
-            ->visible(fn (Get $get): bool => $get('use_text_editor')),
+                    ->schema([
+                        // Toggle::make('use_text_editor')
+                        //     ->label('Use Text Area')
+                        //     ->live()
+                        //     ->default(false),
+                        Forms\Components\TextInput::make('section_heading')
+                            ->label('Section Title')
+                            ->maxLength(255)
+                            ->columnSpanFull(),
+                        Forms\Components\TextInput::make('heading')
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('subheading')
+                            ->maxLength(255),
+                        // Textarea::make('page_content')
+                        //     ->columnSpanFull()
+                        //     ->visible(fn (Get $get): bool => $get('use_text_editor')),
+                        TiptapEditor::make('page_content')
+                            ->label('Content Block')
+                            ->columnSpan(2)
+                            ->visible(fn (Get $get): bool => !$get('use_text_editor')),
+                        Forms\Components\FileUpload::make('image')
+                            ->image()
+                            ->columnSpanFull()
+                            ->directory('portfolios/section-images'),
+                        Forms\Components\TextInput::make('button_1')
+                            ->label('Button')
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('button_1_url')
+                            ->label('Button Link')
+                            ->maxLength(255),
 
-            TiptapEditor::make('page_content')
-                        ->label('Content Block')
-                        ->columnSpan(2)
-                        ->visible(fn (Get $get): bool => !$get('use_text_editor')),
-                ])
-                ->minItems(1)
-                ->columnSpanFull()
-                ->addActionLabel('Add Content Block'), 
-            Forms\Components\TextInput::make('meta_title')
+                        
+                    ])
+
+                    ->columns(2)
+                    ->columnSpanFull()
+                    ->addActionLabel('Add Content Block'), 
+                
+                Forms\Components\TextInput::make('meta_title')
                     ->maxLength(255),
-                 Forms\Components\TextInput::make('meta_keywords')
+                
+                Forms\Components\TextInput::make('meta_keywords')
                     ->maxLength(255),
 
                 Forms\Components\Textarea::make('meta_description')
                     ->maxLength(255)
                     ->columnSpanfull(),
                 
-               
-            Toggle::make('is_active')->label('Active'),
-           
+                Toggle::make('is_active')
+                    ->label('Active'),
+                
+                Toggle::make('is_home')
+                    ->label('Set as Home Page')
+                    ->afterStateUpdated(function ($state, Set $set, $get, ?Model $record) {
+                        if ($state) {
+                            // When this page is set as home, unset all others
+                            CmsPage::where('id', '!=', $record?->id)
+                                ->update(['is_home' => false]);
+                        }
+                    })
+                    ->live()
             ]);
     }
 
@@ -96,11 +130,13 @@ class CmsPageResource extends Resource
     {
         return $table
             ->columns([
-            Tables\Columns\TextColumn::make('title'),
-            Tables\Columns\TextColumn::make('slug'),
-            Tables\Columns\IconColumn::make('is_active')->boolean(),
-            Tables\Columns\TextColumn::make('created_at')->dateTime(),
-            
+                Tables\Columns\TextColumn::make('title'),
+                Tables\Columns\TextColumn::make('slug'),
+                Tables\Columns\IconColumn::make('is_active')->boolean(),
+                Tables\Columns\IconColumn::make('is_home')
+                    ->label('Home Page')
+                    ->boolean(),
+                Tables\Columns\TextColumn::make('created_at')->dateTime(),
             ])
             ->filters([
                 //

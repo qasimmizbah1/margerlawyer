@@ -15,6 +15,7 @@ class Testimonial extends Model
         'client_designation',
         'content',
         'rating',
+        'linkdin',
         'is_active',
     ];
 }

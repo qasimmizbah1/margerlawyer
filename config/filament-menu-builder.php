@@ -27,4 +27,7 @@ return [
         'menu' => \Biostate\FilamentMenuBuilder\DTO\Menu::class,
         'menu_item' => \Biostate\FilamentMenuBuilder\DTO\MenuItem::class,
     ],
+    'type' => [
+        'link' => 'Link',
+    ],
 ];
