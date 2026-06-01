@@ -19,7 +19,7 @@ use App\Http\Controllers\Api\LogosliderController;
 use App\Http\Controllers\Api\TransactionsController;
 Use App\Http\Controllers\Api\WebinarController;
 use App\Http\Controllers\Api\MilsController;
-
+use App\Http\Controllers\Api\NewsletterController;
 
 Route::post('emailsend', [EmailsendController::class, 'emailsend']);
 
@@ -52,7 +52,7 @@ Route::get('webinars/', [WebinarController::class, 'index']);
 Route::get('webinars/{slug}', [WebinarController::class, 'webinarbyslug']);
 Route::get('mils-companions/', [MilsController::class, 'index']);
 Route::get('mils-companions/{slug}', [MilsController::class, 'milsbyslug']);    
-
+Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe']);
 
 });
 
